@@ -1,0 +1,26 @@
+package local.jarios.versionfrommanifest.service;
+
+/**
+ * Interfaz para la definición de los métodos para la obtención de la versión de un fichero jar
+ *
+ * <p>Uso típico:</p>
+ * <pre>{@code
+ *   String version = VersionFromManifestService.getVersion(NombreClase.class);
+ * }</pre>
+ *
+ * @author Juan
+ * @since 15/06/2025
+ * @version 1.0.0
+ */
+public interface VersionFromManifestService {
+
+    /**
+     * Obtiene la versión (Implementation-Version) desde el MANIFEST.MF
+     * del JAR que contiene la clase especificada.
+     *
+     * @param clazz Clase de referencia para localizar el JAR
+     * @return Versión obtenida del MANIFEST.MF o "Desconocida" si no se encuentra
+     */
+    String getVersion(Class<?> clazz);
+}
+
