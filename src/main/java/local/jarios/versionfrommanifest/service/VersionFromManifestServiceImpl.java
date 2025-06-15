@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.util.Optional;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -67,6 +68,13 @@ public class VersionFromManifestServiceImpl implements VersionFromManifestServic
     private static final String  MANIFEST_MAIN_ATTRIBUTE_VERSION = "Implementation-Version";
 
     /**
+     * Constructor vacío.
+     */
+    public VersionFromManifestServiceImpl() {
+        // Constructor vacío
+    }
+
+    /**
      * Obtiene la versión (Implementation-Version) desde el MANIFEST.MF
      * del JAR que contiene la clase especificada.
      *
@@ -76,22 +84,26 @@ public class VersionFromManifestServiceImpl implements VersionFromManifestServic
     public String getVersion(
             Class<?> clazz
     ) {
-        try {
+
 
             String className = clazz.getSimpleName() + CLASS_EXTENSION;
             log.debug(CLASS_NAME, className);
 
-            URL classUrl = clazz.getResource(className);
+            URL classUrl = getResourceURL(clazz, className);
             log.debug(CLASS_URL, classUrl);
 
             if (classUrl == null) {
                 return SIN_RECURSO_CLASE;
             }
 
-            if (!"jar".equals(classUrl.getProtocol())) {
+            String protocol = classUrl.getProtocol();
+
+            if (!"jar".equals(protocol)) {
                 // Probablemente en entorno desarrollo (no en JAR)
                 return EJECUCION_SIN_JAR;
             }
+
+        try {
 
             JarURLConnection jarConnection = (JarURLConnection) classUrl.openConnection();
             log.debug("Conexión con la URL del fichero JAR realizada correctamente.");
@@ -123,5 +135,30 @@ public class VersionFromManifestServiceImpl implements VersionFromManifestServic
             log.error(mensaje);
             throw new VersionFromManifestException(mensaje, e);
         }
+    }
+
+    /**
+     * Método protegido para facilitar testing
+     * @param clazz Clase
+     * @param className Nombre de la case
+     * @return URL
+     */
+    protected URL getResourceURL(Class<?> clazz, String className) {
+        return clazz.getResource(className);
+    }
+
+    /**
+     * Obtiene la versión de la aplicación desde el archivo {@code MANIFEST.MF} ubicado en el JAR.
+     * <p>
+     * Este método intenta leer el atributo {@code Implementation-Version} del manifiesto
+     * para determinar la versión con la que fue construido el JAR.
+     * </p>
+     *
+     * @return un {@link Optional} que contiene la versión si se encuentra, o {@link Optional#empty()}
+     *         si no se puede leer el manifiesto o el atributo no está presente.
+     */
+    @Override
+    public Optional<String> getVersionFromManifest() {
+        return Optional.empty();
     }
 }

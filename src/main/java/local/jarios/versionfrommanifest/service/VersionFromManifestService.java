@@ -1,5 +1,7 @@
 package local.jarios.versionfrommanifest.service;
 
+import java.util.Optional;
+
 /**
  * Interfaz para la definición de los métodos para la obtención de la versión de un fichero jar
  *
@@ -22,5 +24,17 @@ public interface VersionFromManifestService {
      * @return Versión obtenida del MANIFEST.MF o "Desconocida" si no se encuentra
      */
     String getVersion(Class<?> clazz);
+
+    /**
+     * Obtiene la versión de la aplicación desde el archivo {@code MANIFEST.MF} ubicado en el JAR.
+     * <p>
+     * Este método intenta leer el atributo {@code Implementation-Version} del manifiesto
+     * para determinar la versión con la que fue construido el JAR.
+     * </p>
+     *
+     * @return un {@link Optional} que contiene la versión si se encuentra, o {@link Optional#empty()}
+     *         si no se puede leer el manifiesto o el atributo no está presente.
+     */
+    Optional<String> getVersionFromManifest();
 }
 
