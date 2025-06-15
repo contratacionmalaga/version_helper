@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
     <artifactId>version-from-manifest</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>version-from-manifest</name>
@@ -13,7 +13,7 @@
         <connection>scm:git:https://github.com/contratacionmalaga/version-from-manifest.git</connection>
         <developerConnection>scm:git:git@github.com:contratacionmalaga/version-from-manifest.git</developerConnection>
         <url>https://github.com/contratacionmalaga/version-from-manifest</url>
-        <tag>HEAD</tag>
+        <tag>v1.0.0</tag>
     </scm>
 
     <distributionManagement>
