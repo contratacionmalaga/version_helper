@@ -1,8 +1,8 @@
 package local.jarios;
 
-import local.jarios.versionfrommanifest.exception.VersionFromManifestException;
-import local.jarios.versionfrommanifest.service.VersionFromManifestService;
-import local.jarios.versionfrommanifest.service.VersionFromManifestServiceImpl;
+import local.jarios.version.exception.VersionException;
+import local.jarios.version.api.Version;
+import local.jarios.version.api.VersionImpl;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * </p>
  */
 @Slf4j
-public class VersionFromManifestDemo {
+public class VersionDemo {
 
     /**
      * Mensaje que indica el inicio de la ejecución del programa.
@@ -29,7 +29,7 @@ public class VersionFromManifestDemo {
      * Constructor por defecto.
      * Esta clase solo contiene el método main, no se debe instanciar.
      */
-    private VersionFromManifestDemo() {
+    private VersionDemo() {
         // Constructor vacío
     }
 
@@ -42,13 +42,13 @@ public class VersionFromManifestDemo {
 
         try {
 
-            VersionFromManifestService versionService = new VersionFromManifestServiceImpl();
+            Version versionService = new VersionImpl();
             log.info("El servicio de consulta de la versión del JAR se ha creado correctamente.");
 
-            String version = versionService.getVersion(VersionFromManifestDemo.class);
+            String version = versionService.getVersion(VersionDemo.class);
             log.info("Versión: {}", version);
 
-        } catch (VersionFromManifestException e) {
+        } catch (VersionException e) {
 
             log.error("Error al obtener la versión del fichero.");
             throw e; // <- Repropagar al consumidor del módulo

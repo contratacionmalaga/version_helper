@@ -1,12 +1,11 @@
-package local.jarios.versionfrommanifest.service;
+package local.jarios.version.api;
 
-import local.jarios.versionfrommanifest.exception.VersionFromManifestException;
+import local.jarios.version.exception.VersionException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.Optional;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -19,7 +18,7 @@ import java.util.jar.Manifest;
  * @version 1.0.0
  */
 @Slf4j
-public class VersionFromManifestServiceImpl implements VersionFromManifestService {
+public class VersionImpl implements Version {
 
     /**
      Nombre de la clase
@@ -70,7 +69,7 @@ public class VersionFromManifestServiceImpl implements VersionFromManifestServic
     /**
      * Constructor vacío.
      */
-    public VersionFromManifestServiceImpl() {
+    public VersionImpl() {
         // Constructor vacío
     }
 
@@ -133,7 +132,7 @@ public class VersionFromManifestServiceImpl implements VersionFromManifestServic
         } catch (IOException e) {
             String mensaje = String.format(EXCEPCION, e.getMessage());
             log.error(mensaje);
-            throw new VersionFromManifestException(mensaje, e);
+            throw new VersionException(mensaje, e);
         }
     }
 
@@ -145,20 +144,5 @@ public class VersionFromManifestServiceImpl implements VersionFromManifestServic
      */
     protected URL getResourceURL(Class<?> clazz, String className) {
         return clazz.getResource(className);
-    }
-
-    /**
-     * Obtiene la versión de la aplicación desde el archivo {@code MANIFEST.MF} ubicado en el JAR.
-     * <p>
-     * Este método intenta leer el atributo {@code Implementation-Version} del manifiesto
-     * para determinar la versión con la que fue construido el JAR.
-     * </p>
-     *
-     * @return un {@link Optional} que contiene la versión si se encuentra, o {@link Optional#empty()}
-     *         si no se puede leer el manifiesto o el atributo no está presente.
-     */
-    @Override
-    public Optional<String> getVersionFromManifest() {
-        return Optional.empty();
     }
 }
