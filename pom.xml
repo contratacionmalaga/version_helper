@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
-    <artifactId>version_from_manifest</artifactId>
+    <artifactId>version_helper</artifactId>
     <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>version_from_manifest</name>
+    <name>version_helper</name>
     <description>Devuelve la versión de un fichero jar mediante la consulta del MANIFEST.MF</description>
 
     <scm>
-        <connection>scm:git:https://github.com/contratacionmalaga/version_from_manifest.git</connection>
-        <developerConnection>scm:git:git@github.com:contratacionmalaga/version_from_manifest.git</developerConnection>
-        <url>https://github.com/contratacionmalaga/version_from_manifest</url>
+        <connection>scm:git:https://github.com/contratacionmalaga/version_helper.git</connection>
+        <developerConnection>scm:git:git@github.com:contratacionmalaga/version_helper.git</developerConnection>
+        <url>https://github.com/contratacionmalaga/version_helper</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -20,12 +20,12 @@
         <repository>
             <id>github-releases</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/version_from_manifest</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/version_helper</url>
         </repository>
         <snapshotRepository>
             <id>github-snapshots</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/version_from_manifest</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/version_helper</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -123,7 +123,7 @@
     </profiles>
 
     <build>
-        <finalName>version_from_manifest</finalName>
+        <finalName>version_helper</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
