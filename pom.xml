@@ -2,17 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
-    <artifactId>version-from-manifest</artifactId>
+    <artifactId>version_from_manifest</artifactId>
     <version>1.0.2</version>
     <packaging>jar</packaging>
 
-    <name>version-from-manifest</name>
+    <name>version_from_manifest</name>
     <description>Devuelve la versión de un fichero jar mediante la consulta del MANIFEST.MF</description>
 
     <scm>
-        <connection>scm:git:https://github.com/contratacionmalaga/version-from-manifest.git</connection>
-        <developerConnection>scm:git:git@github.com:contratacionmalaga/version-from-manifest.git</developerConnection>
-        <url>https://github.com/contratacionmalaga/version-from-manifest</url>
+        <connection>scm:git:https://github.com/contratacionmalaga/version_from_manifest.git</connection>
+        <developerConnection>scm:git:git@github.com:contratacionmalaga/version_from_manifest.git</developerConnection>
+        <url>https://github.com/contratacionmalaga/version_from_manifest</url>
         <tag>v1.0.2</tag>
     </scm>
 
@@ -20,12 +20,12 @@
         <repository>
             <id>github-releases</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/version-from-manifest</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/version_from_manifest</url>
         </repository>
         <snapshotRepository>
             <id>github-snapshots</id>
             <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/version-from-manifest</url>
+            <url>https://maven.pkg.github.com/contratacionmalaga/version_from_manifest</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -123,7 +123,7 @@
     </profiles>
 
     <build>
-        <finalName>version-from-manifest</finalName>
+        <finalName>version_from_manifest</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -168,24 +168,6 @@
                 <dependencies>
 
                 </dependencies>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
@@ -238,48 +220,37 @@
                 </configuration>
             </plugin>
 
+            <!-- plugin para generar jar normal -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <finalName>${project.artifactId}-${project.version}</finalName>
+                </configuration>
+            </plugin>
+
+            <!-- plugin para fat jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.7.1</version>
                 <configuration>
-                    <finalName>${project.artifactId}-${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>local.jarios.VersionFromManifestDemo</mainClass>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                    </archive>
+                    <appendAssemblyId>true</appendAssemblyId> <!-- para que tenga sufijo -->
+                    <finalName>${project.artifactId}-${project.version}</finalName> <!-- nombre con _fat -->
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
+                        <id>make-fat-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>local.jarios.VersionFromManifestDemo</mainClass>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                    </archive>
-                </configuration>
             </plugin>
 
         </plugins>
