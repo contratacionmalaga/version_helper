@@ -64,8 +64,8 @@ Agrega la dependencia en el pom.xml del proyecto consumidor:
 ```
 <dependency>
   <groupId>local.jarios</groupId>
-  <artifactId>version_from_manifest</artifactId>
-  <version>1.0.2</version> <!-- usa la versión que corresponda -->
+  <artifactId>version_helper</artifactId>
+  <version>1.0.3</version>
 </dependency>
 ```
 
