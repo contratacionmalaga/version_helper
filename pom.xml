@@ -3,17 +3,17 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
     <artifactId>version_helper</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>version_helper</name>
     <description>Devuelve la versión de un fichero jar mediante la consulta del MANIFEST.MF</description>
 
     <scm>
-        <connection>scm:git:https://github.com/contratacionmalaga/version_helper.git</connection>
+        <connection>scm:git:git@github.com:contratacionmalaga/version_helper.git</connection>
         <developerConnection>scm:git:git@github.com:contratacionmalaga/version_helper.git</developerConnection>
-        <url>https://github.com/contratacionmalaga/version_helper</url>
-        <tag>v1.0.4</tag>
+        <url>https://github.com/contratacionmalaga/version_helper.git</url>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
