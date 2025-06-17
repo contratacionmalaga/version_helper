@@ -6,9 +6,11 @@ Servicio Java para obtener la versión de un fichero JAR consultando el `MANIFES
 
 ## Descripción
 
-La clase `VersionImpl` implementa el servicio para extraer la versión (`Implementation-Version`) definida en el archivo `MANIFEST.MF` del JAR que contiene una clase determinada.
+La clase `VersionImpl` implementa el servicio para extraer la versión (`Implementation-Version`) 
+definida en el archivo `MANIFEST.MF` del JAR que contiene una clase determinada.
 
-Este servicio es útil para obtener de forma programática la versión del artefacto en tiempo de ejecución, especialmente cuando el código está empaquetado en un JAR.
+Este servicio es útil para obtener de forma programática la versión del artefacto en tiempo de ejecución, 
+especialmente cuando el código está empaquetado en un JAR.
 
 ---
 
