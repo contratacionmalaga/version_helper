@@ -84,23 +84,26 @@ public class VersionImpl implements Version {
             Class<?> clazz
     ) {
 
+        if (clazz == null) {
+            throw new VersionException("La clase no puede ser nula");
+        }
 
-            String className = clazz.getSimpleName() + CLASS_EXTENSION;
-            log.debug(CLASS_NAME, className);
+        String className = clazz.getSimpleName() + CLASS_EXTENSION;
+        log.debug(CLASS_NAME, className);
 
-            URL classUrl = getResourceURL(clazz, className);
-            log.debug(CLASS_URL, classUrl);
+        URL classUrl = getResourceURL(clazz, className);
+        log.debug(CLASS_URL, classUrl);
 
-            if (classUrl == null) {
-                return SIN_RECURSO_CLASE;
-            }
+        if (classUrl == null) {
+            return SIN_RECURSO_CLASE;
+        }
 
-            String protocol = classUrl.getProtocol();
+        String protocol = classUrl.getProtocol();
 
-            if (!"jar".equals(protocol)) {
-                // Probablemente en entorno desarrollo (no en JAR)
-                return EJECUCION_SIN_JAR;
-            }
+        if (!"jar".equals(protocol)) {
+            // Probablemente en entorno desarrollo (no en JAR)
+            return EJECUCION_SIN_JAR;
+        }
 
         try {
 

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
     <artifactId>version_helper</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>version_helper</name>
@@ -30,7 +30,8 @@
     </distributionManagement>
 
     <properties>
-        <custom.final.name>${project.artifactId}-${project.version}</custom.final.name>
+        <version.trimmed>${project.version}</version.trimmed> <!-- Por defecto usa la versión completa -->
+        <final.name>${project.artifactId}-${version.trimmed}</final.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -107,23 +108,22 @@
 
     <profiles>
         <profile>
-            <id>fat-jar</id>
+            <id>release</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <!-- Aquí defines manualmente la versión limpia -->
+                <version.trimmed>1.1.0</version.trimmed>
+            </properties>
         </profile>
     </profiles>
 
     <build>
-        <finalName>version_helper</finalName>
+
+        <!-- Nombre del JAR por defecto (incluye -SNAPSHOT si aplica) -->
+        <finalName>${final.name}</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -220,24 +220,22 @@
                 </configuration>
             </plugin>
 
-            <!-- plugin para generar jar normal -->
+            <!-- Plugin maven-jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.2</version>
-                <configuration>
-                    <finalName>${project.artifactId}-${project.version}</finalName>
-                </configuration>
+                <!-- No config aquí; se toma el finalName del <build> -->
             </plugin>
 
-            <!-- plugin para fat jar -->
+            <!-- Plugin para fat JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.7.1</version>
                 <configuration>
-                    <appendAssemblyId>true</appendAssemblyId> <!-- para que tenga sufijo -->
-                    <finalName>${project.artifactId}-${project.version}</finalName> <!-- nombre con _fat -->
+                    <appendAssemblyId>true</appendAssemblyId>
+                    <finalName>${project.artifactId}-${version.trimmed}</finalName>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
