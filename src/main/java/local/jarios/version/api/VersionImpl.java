@@ -85,7 +85,7 @@ public class VersionImpl implements Version {
     ) {
 
         if (clazz == null) {
-            throw new VersionException("La clase no puede ser nula");
+            throw new VersionException("[getVersion] - La clase no puede ser nula");
         }
 
         String className = clazz.getSimpleName() + CLASS_EXTENSION;
@@ -108,23 +108,23 @@ public class VersionImpl implements Version {
         try {
 
             JarURLConnection jarConnection = (JarURLConnection) classUrl.openConnection();
-            log.debug("Conexión con la URL del fichero JAR realizada correctamente.");
+            log.debug("[getVersion] - Conexión con la URL del fichero JAR realizada correctamente.");
 
             JarFile jarFile = jarConnection.getJarFile();
-            log.debug("Fichero JAR obtenido corerctamente.");
+            log.debug("[getVersion] - Fichero JAR obtenido corerctamente.");
 
             Manifest manifest = jarFile.getManifest();
-            log.debug("Obtención del Manifest asociado al fichero JAR.");
+            log.debug("[getVersion] - Obtención del Manifest asociado al fichero JAR.");
 
             if (manifest == null) {
                 return SIN_MANIFEST;
             }
 
             Attributes mainAttributes = manifest.getMainAttributes();
-            log.debug("Obtención de los atributos asociados al Manifest.");
+            log.debug("[getVersion] - Obtención de los atributos asociados al Manifest.");
 
             String version = mainAttributes.getValue(MANIFEST_MAIN_ATTRIBUTE_VERSION);
-            log.debug("{}: {}", MANIFEST_MAIN_ATTRIBUTE_VERSION, version);
+            log.debug("[getVersion] - {}: {}", MANIFEST_MAIN_ATTRIBUTE_VERSION, version);
 
             if (version == null || version.isEmpty()) {
                 return SIN_VERSION;
