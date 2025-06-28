@@ -88,9 +88,7 @@ public class VersionImpl implements Version {
      * @param clazz Clase de referencia para localizar el JAR
      * @return Versión obtenida del MANIFEST.MF o "Desconocida" si no se encuentra
      */
-    public String getVersion(
-            Class<?> clazz
-    ) {
+    public String getVersion(Class<?> clazz) throws VersionException {
 
         if (clazz == null) {
             throw new VersionException("[getVersion] - La clase no puede ser nula");
@@ -140,10 +138,12 @@ public class VersionImpl implements Version {
 
             return version;
 
-        } catch (IOException e) {
-            String mensaje = String.format(EXCEPCION, e.getMessage());
+        } catch (IOException ex) {
+
+            String mensaje = String.format(EXCEPCION, ex.getMessage());
             LOGGER.error(mensaje);
-            throw new VersionException(mensaje, e);
+            throw new VersionException(mensaje, ex);
+
         }
     }
 
@@ -154,6 +154,19 @@ public class VersionImpl implements Version {
      * @return URL
      */
     protected URL getResourceURL(Class<?> clazz, String className) {
-        return clazz.getResource(className);
+
+        try {
+
+            URL url = clazz.getResource(className);
+            LOGGER.debug("[getResourceURL] - URL: {}", url);
+
+            return url;
+
+        } catch (NullPointerException ex) {
+
+            String mensaje = String.format(EXCEPCION, ex.getMessage());
+            LOGGER.error(mensaje);
+            throw new VersionException(mensaje, ex);
+        }
     }
 }

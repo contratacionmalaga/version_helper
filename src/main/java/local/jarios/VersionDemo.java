@@ -1,8 +1,11 @@
 package local.jarios;
 
+import local.jarios.version.enums.TipoFinalEjecucion;
 import local.jarios.version.exception.VersionException;
 import local.jarios.version.api.Version;
 import local.jarios.version.api.VersionImpl;
+import local.jarios.version.helpers.FinalDelProgramaHelper;
+import local.jarios.version.common.util.Mensajes;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,16 +24,6 @@ public class VersionDemo {
      */
     private static final Logger LOGGER = LogManager.getLogger("local.jarios.version");
 
-    /**
-     * Mensaje que indica el inicio de la ejecución del programa.
-     */
-    public static final String INICIO = "**** Inicio del log";
-
-    /**
-     * Mensaje que indica el inicio de la ejecución del programa.
-     */
-    public static final String FINAL = "**** Final del log";
-
    /**
      * Constructor por defecto.
      * Esta clase solo contiene el método main, no se debe instanciar.
@@ -44,7 +37,8 @@ public class VersionDemo {
      */
     public static void main() {
 
-        LOGGER.info(INICIO);
+        // Inicio del log
+        LOGGER.info(Mensajes.INICIO);
 
         try {
 
@@ -54,14 +48,13 @@ public class VersionDemo {
             String version = versionService.getVersion(VersionDemo.class);
             LOGGER.info("Versión: {}", version);
 
-        } catch (VersionException e) {
+            FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
 
-            LOGGER.error("Error al obtener la versión del fichero.");
-            throw e; // <- Repropagar al consumidor del módulo
+        } catch (VersionException ex) {
 
-        } finally {
+            LOGGER.error("Error en las operaciones sobre ficheros properties. Mensaje: {}", ex.getMessage(), ex);
+            FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR);
 
-            LOGGER.info(FINAL);
         }
     }
 }
