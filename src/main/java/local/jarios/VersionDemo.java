@@ -3,7 +3,8 @@ package local.jarios;
 import local.jarios.version.exception.VersionException;
 import local.jarios.version.api.Version;
 import local.jarios.version.api.VersionImpl;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Clase principal para ejecutar el cifrado y descifrado desde línea de comandos.
@@ -12,8 +13,13 @@ import lombok.extern.slf4j.Slf4j;
  * {@code java -jar encriptador.jar <claveMaestra> <texto>}
  * </p>
  */
-@Slf4j
 public class VersionDemo {
+
+    /**
+     * Instancia única (singleton) del gestor de propiedades.
+     * Inicialización temprana y thread-safe mediante static final.
+     */
+    private static final Logger LOGGER = LogManager.getLogger("local.jarios.version");
 
     /**
      * Mensaje que indica el inicio de la ejecución del programa.
@@ -38,24 +44,24 @@ public class VersionDemo {
      */
     public static void main() {
 
-        log.info(INICIO);
+        LOGGER.info(INICIO);
 
         try {
 
             Version versionService = new VersionImpl();
-            log.info("El servicio de consulta de la versión del JAR se ha creado correctamente.");
+            LOGGER.info("El servicio de consulta de la versión del JAR se ha creado correctamente.");
 
             String version = versionService.getVersion(VersionDemo.class);
-            log.info("Versión: {}", version);
+            LOGGER.info("Versión: {}", version);
 
         } catch (VersionException e) {
 
-            log.error("Error al obtener la versión del fichero.");
+            LOGGER.error("Error al obtener la versión del fichero.");
             throw e; // <- Repropagar al consumidor del módulo
 
         } finally {
 
-            log.info(FINAL);
+            LOGGER.info(FINAL);
         }
     }
 }

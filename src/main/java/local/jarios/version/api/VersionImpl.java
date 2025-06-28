@@ -2,6 +2,8 @@ package local.jarios.version.api;
 
 import local.jarios.version.exception.VersionException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.JarURLConnection;
@@ -19,6 +21,12 @@ import java.util.jar.Manifest;
  */
 @Slf4j
 public class VersionImpl implements Version {
+
+    /**
+     * Instancia única (singleton) del gestor de propiedades.
+     * Inicialización temprana y thread-safe mediante static final.
+     */
+    private static final Logger LOGGER = LogManager.getLogger("local.jarios.version");
 
     /**
      Nombre de la clase
@@ -89,10 +97,10 @@ public class VersionImpl implements Version {
         }
 
         String className = clazz.getSimpleName() + CLASS_EXTENSION;
-        log.debug(CLASS_NAME, className);
+        LOGGER.debug(CLASS_NAME, className);
 
         URL classUrl = getResourceURL(clazz, className);
-        log.debug(CLASS_URL, classUrl);
+        LOGGER.debug(CLASS_URL, classUrl);
 
         if (classUrl == null) {
             return SIN_RECURSO_CLASE;
@@ -108,23 +116,23 @@ public class VersionImpl implements Version {
         try {
 
             JarURLConnection jarConnection = (JarURLConnection) classUrl.openConnection();
-            log.debug("[getVersion] - Conexión con la URL del fichero JAR realizada correctamente.");
+            LOGGER.debug("[getVersion] - Conexión con la URL del fichero JAR realizada correctamente.");
 
             JarFile jarFile = jarConnection.getJarFile();
-            log.debug("[getVersion] - Fichero JAR obtenido corerctamente.");
+            LOGGER.debug("[getVersion] - Fichero JAR obtenido corerctamente.");
 
             Manifest manifest = jarFile.getManifest();
-            log.debug("[getVersion] - Obtención del Manifest asociado al fichero JAR.");
+            LOGGER.debug("[getVersion] - Obtención del Manifest asociado al fichero JAR.");
 
             if (manifest == null) {
                 return SIN_MANIFEST;
             }
 
             Attributes mainAttributes = manifest.getMainAttributes();
-            log.debug("[getVersion] - Obtención de los atributos asociados al Manifest.");
+            LOGGER.debug("[getVersion] - Obtención de los atributos asociados al Manifest.");
 
             String version = mainAttributes.getValue(MANIFEST_MAIN_ATTRIBUTE_VERSION);
-            log.debug("[getVersion] - {}: {}", MANIFEST_MAIN_ATTRIBUTE_VERSION, version);
+            LOGGER.debug("[getVersion] - {}: {}", MANIFEST_MAIN_ATTRIBUTE_VERSION, version);
 
             if (version == null || version.isEmpty()) {
                 return SIN_VERSION;
@@ -134,7 +142,7 @@ public class VersionImpl implements Version {
 
         } catch (IOException e) {
             String mensaje = String.format(EXCEPCION, e.getMessage());
-            log.error(mensaje);
+            LOGGER.error(mensaje);
             throw new VersionException(mensaje, e);
         }
     }
