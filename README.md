@@ -67,7 +67,7 @@ Agrega la dependencia en el pom.xml del proyecto consumidor:
 <dependency>
   <groupId>local.jarios</groupId>
   <artifactId>version_helper</artifactId>
-  <version>1.0.3</version>
+  <version>2.0.0</version>         # Última versión disponible
 </dependency>
 ```
 
