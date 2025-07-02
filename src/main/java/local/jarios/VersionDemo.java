@@ -52,7 +52,6 @@ public class VersionDemo {
 
         } catch (VersionException ex) {
 
-            LOGGER.error("Error en las operaciones sobre ficheros properties. Mensaje: {}", ex.getMessage(), ex);
             FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR);
 
         }

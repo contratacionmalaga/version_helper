@@ -141,7 +141,7 @@ public class VersionImpl implements Version {
         } catch (IOException ex) {
 
             String mensaje = String.format(EXCEPCION, ex.getMessage());
-            LOGGER.error(mensaje);
+            LOGGER.error(mensaje, ex);
             throw new VersionException(mensaje, ex);
 
         }
