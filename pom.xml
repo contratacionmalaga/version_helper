@@ -3,8 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
     <artifactId>version_helper</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>2.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
 
     <name>version_helper</name>
     <description>Devuelve la versión de un fichero jar mediante la consulta del MANIFEST.MF</description>
@@ -35,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>local.jarios.VersionDemo</exec.mainClass>
+        <exec.mainClass>local.jarios.version.VersionDemo</exec.mainClass>
     </properties>
 
     <dependencies>
@@ -229,6 +236,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>local.jarios.version.VersionDemo</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+
                 <!-- No config aquí; se toma el finalName del <build> -->
             </plugin>
 
@@ -238,6 +253,11 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.7.1</version>
                 <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>local.jarios.version.VersionDemo</Main-Class>
+                        </manifestEntries>
+                    </archive>
                     <appendAssemblyId>true</appendAssemblyId>
                     <finalName>${project.artifactId}-${version.trimmed}</finalName>
                     <descriptorRefs>
@@ -267,7 +287,7 @@
             </activation>
             <properties>
                 <!-- Aquí defines manualmente la versión limpia -->
-                <version.trimmed>2.0.0</version.trimmed>
+                <version.trimmed>2.1.0</version.trimmed>
             </properties>
         </profile>
     </profiles>

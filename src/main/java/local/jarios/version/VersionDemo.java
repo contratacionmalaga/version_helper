@@ -1,4 +1,4 @@
-package local.jarios;
+package local.jarios.version;
 
 import local.jarios.version.enums.TipoFinalEjecucion;
 import local.jarios.version.exception.VersionException;
