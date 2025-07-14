@@ -35,7 +35,7 @@ public class VersionDemo {
     /**
      * Método principal para ejecutar el cifrado y descifrado.
      */
-    public static void main() {
+    public static void main(String[] args) {
 
         // Inicio del log
         LOGGER.info(Mensajes.INICIO);
