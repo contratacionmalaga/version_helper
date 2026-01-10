@@ -69,7 +69,6 @@ public class VersionDemo {
       } catch (VersionException ex) {
 
         FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR, ex.getMessage());
-
       }
     }
 }
