@@ -6,8 +6,10 @@ import local.jarios.version.api.Version;
 import local.jarios.version.api.VersionImpl;
 import local.jarios.version.helpers.FinalDelProgramaHelper;
 import local.jarios.version.common.util.Mensajes;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Clase principal para ejecutar el cifrado y descifrado desde línea de comandos.
@@ -16,13 +18,8 @@ import org.apache.logging.log4j.Logger;
  * {@code java -jar encriptador.jar <claveMaestra> <texto>}
  * </p>
  */
+@Slf4j
 public class VersionDemo {
-
-    /**
-     * Instancia única (singleton) del gestor de propiedades.
-     * Inicialización temprana y thread-safe mediante static final.
-     */
-    private static final Logger LOGGER = LogManager.getLogger("local.jarios.version");
 
    /**
      * Constructor por defecto.
@@ -37,23 +34,42 @@ public class VersionDemo {
      */
     public static void main(String[] args) {
 
-        // Inicio del log
-        LOGGER.info(Mensajes.INICIO);
+      // Inicio del log
+      log.info(Mensajes.INICIO);
 
-        try {
+      // Carga de los mensajes de error
+      List<String> mensajesError = Arrays.asList(
+          Mensajes.ERROR_1,
+          Mensajes.ERROR_2,
+          Mensajes.ERROR_3,
+          Mensajes.ERROR_4
+      );
 
-            Version versionService = new VersionImpl();
-            LOGGER.info("El servicio de consulta de la versión del JAR se ha creado correctamente.");
+      try {
 
-            String version = versionService.getVersion(VersionDemo.class);
-            LOGGER.info("Versión: {}", version);
+        // Creación del Servicio
+        Version versionService = new VersionImpl();
+        log.info("El servicio de consulta de la versión del JAR se ha creado correctamente.");
 
-            FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
+        // Obtengo la version
+        String version = versionService.getVersion(VersionDemo.class);
 
-        } catch (VersionException ex) {
-
-            FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR);
-
+        // Discrimino si el valor obtenido pertenece a la lista de mensajes de error
+        if (mensajesError.contains(version)) {
+          log.warn("No se obtuvo la versión real, mensaje: {}", version);
+          FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
+        } else {
+          log.info("Versión obtenida correctamente: {}", version);
+          FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
         }
+
+        // Final de la ejecución
+        FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
+
+      } catch (VersionException ex) {
+
+        FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR, ex.getMessage());
+
+      }
     }
 }

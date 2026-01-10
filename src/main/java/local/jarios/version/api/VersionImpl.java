@@ -2,8 +2,6 @@ package local.jarios.version.api;
 
 import local.jarios.version.exception.VersionException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.JarURLConnection;
@@ -13,66 +11,18 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 /**
- * Implementación del servicio de obtención de la versión de un fichero jar
+ * Servicio para obtener la versión de un JAR a partir de su MANIFEST.MF
+ * usando como referencia una clase contenida en el JAR.
  *
  * @author Juan
  * @since 15/06/2025
- * @version 1.0.0
+ * @version 1.1.0
  */
 @Slf4j
 public class VersionImpl implements Version {
 
-    /**
-     * Instancia única (singleton) del gestor de propiedades.
-     * Inicialización temprana y thread-safe mediante static final.
-     */
-    private static final Logger LOGGER = LogManager.getLogger("local.jarios.version");
-
-    /**
-     Nombre de la clase
-     */
-    private static final String  CLASS_EXTENSION = ".class";
-
-    /**
-     Nombre de la clase
-     */
-    private static final String  CLASS_NAME = "Nombre de la clase: {}";
-
-    /**
-     URL de la clase
-     */
-    private static final String  CLASS_URL = "URL de la clase: {}";
-
-    /**
-     No se encontró recurso de clase
-     */
-    private static final String  SIN_RECURSO_CLASE = "No se encontró recurso de clase";
-
-    /**
-     Ejecutando sin JAR (modo desarrollo)
-     */
-    private static final String  EJECUCION_SIN_JAR = "Ejecutando sin JAR (modo desarrollo)";
-
-    /**
-     No se encontró MANIFEST.MF en el JAR
-     */
-    private static final String  SIN_MANIFEST = "No se encontró MANIFEST.MF en el JAR";
-
-    /**
-     Versión no especificada en MANIFEST.MF
-     */
-    private static final String  SIN_VERSION = "Versión no especificada en MANIFEST.MF. Revisar fichero pom.xml";
-
-
-    /**
-     Versión no especificada en MANIFEST.MF
-     */
-    private static final String  EXCEPCION = "Error leyendo el fichero MANIFEST.MF dentro del JAR. %s";
-
-    /**
-     Versión no especificada en MANIFEST.MF
-     */
-    private static final String  MANIFEST_MAIN_ATTRIBUTE_VERSION = "Implementation-Version";
+    private static final String CLASS_EXTENSION = ".class";
+    private static final String MANIFEST_ATTRIBUTE_VERSION = "Implementation-Version";
 
     /**
      * Constructor vacío.
@@ -82,90 +32,79 @@ public class VersionImpl implements Version {
     }
 
     /**
-     * Obtiene la versión (Implementation-Version) desde el MANIFEST.MF
-     * del JAR que contiene la clase especificada.
+     * Obtiene la versión del JAR que contiene la clase indicada.
      *
-     * @param clazz Clase de referencia para localizar el JAR
-     * @return Versión obtenida del MANIFEST.MF o "Desconocida" si no se encuentra
+     * @param clazz Clase de referencia
+     * @return Versión obtenida del MANIFEST.MF, o mensaje de contexto si no se encuentra
+     * @throws VersionException en caso de errores de lectura
      */
+    @Override
     public String getVersion(Class<?> clazz) throws VersionException {
 
         if (clazz == null) {
-            throw new VersionException("[getVersion] - La clase no puede ser nula");
+            throw new VersionException("La clase no puede ser nula");
         }
 
         String className = clazz.getSimpleName() + CLASS_EXTENSION;
-        LOGGER.debug(CLASS_NAME, className);
+        log.debug("Obteniendo versión para la clase: {}", className);
 
         URL classUrl = getResourceURL(clazz, className);
-        LOGGER.debug(CLASS_URL, classUrl);
-
         if (classUrl == null) {
-            return SIN_RECURSO_CLASE;
+            log.debug("No se encontró recurso de clase para {}", className);
+            return "No se encontró recurso de clase";
         }
 
         String protocol = classUrl.getProtocol();
-
         if (!"jar".equals(protocol)) {
-            // Probablemente en entorno desarrollo (no en JAR)
-            return EJECUCION_SIN_JAR;
+            log.debug("Ejecutando fuera de un JAR (modo desarrollo). URL: {}", classUrl);
+            return "Ejecutando sin JAR (modo desarrollo)";
         }
 
         try {
-
             JarURLConnection jarConnection = (JarURLConnection) classUrl.openConnection();
-            LOGGER.debug("[getVersion] - Conexión con la URL del fichero JAR realizada correctamente.");
-
             JarFile jarFile = jarConnection.getJarFile();
-            LOGGER.debug("[getVersion] - Fichero JAR obtenido corerctamente.");
+            log.debug("Conexión con JAR establecida correctamente: {}", jarFile.getName());
 
             Manifest manifest = jarFile.getManifest();
-            LOGGER.debug("[getVersion] - Obtención del Manifest asociado al fichero JAR.");
-
             if (manifest == null) {
-                return SIN_MANIFEST;
+                log.debug("No se encontró MANIFEST.MF en el JAR: {}", jarFile.getName());
+                return "No se encontró MANIFEST.MF en el JAR";
             }
 
             Attributes mainAttributes = manifest.getMainAttributes();
-            LOGGER.debug("[getVersion] - Obtención de los atributos asociados al Manifest.");
-
-            String version = mainAttributes.getValue(MANIFEST_MAIN_ATTRIBUTE_VERSION);
-            LOGGER.debug("[getVersion] - {}: {}", MANIFEST_MAIN_ATTRIBUTE_VERSION, version);
+            String version = mainAttributes.getValue(MANIFEST_ATTRIBUTE_VERSION);
 
             if (version == null || version.isEmpty()) {
-                return SIN_VERSION;
+                log.debug("La versión no está especificada en MANIFEST.MF para el JAR: {}", jarFile.getName());
+                return "Versión no especificada en MANIFEST.MF. Revisar fichero pom.xml";
             }
 
+            log.info("Versión obtenida del JAR {}: {}", jarFile.getName(), version);
             return version;
 
         } catch (IOException ex) {
-
-            String mensaje = String.format(EXCEPCION, ex.getMessage());
-            LOGGER.error(mensaje, ex);
+            String mensaje = "Error leyendo el MANIFEST.MF dentro del JAR: " + ex.getMessage();
+            log.error(mensaje, ex);
             throw new VersionException(mensaje, ex);
-
         }
     }
 
     /**
-     * Método protegido para facilitar testing
-     * @param clazz Clase
-     * @param className Nombre de la case
-     * @return URL
+     * Obtiene la URL del recurso de clase.
+     *
+     * @param clazz Clase de referencia
+     * @param className Nombre del archivo de clase
+     * @return URL del recurso
+     * @throws VersionException si ocurre algún error
      */
     protected URL getResourceURL(Class<?> clazz, String className) {
-
         try {
-
             URL url = clazz.getResource(className);
-            LOGGER.debug("[getResourceURL] - URL: {}", url);
-
+            log.debug("URL de la clase {}: {}", className, url);
             return url;
-
         } catch (NullPointerException ex) {
-
-            String mensaje = String.format(EXCEPCION, ex.getMessage());
-            LOGGER.error(mensaje);
+            String mensaje = "Error obteniendo URL del recurso de clase: " + ex.getMessage();
+            log.error(mensaje, ex);
             throw new VersionException(mensaje, ex);
         }
     }

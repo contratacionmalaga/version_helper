@@ -14,33 +14,31 @@ package local.jarios.version.common.util;
  */
 public final class Mensajes {
 
-    /**
-     * Mensaje que indica el inicio de la ejecución del programa.
-     */
-    public static final String INICIO =
-            "**** Inicio del log";
+    /** Mensaje Error-1. */
+    public static final String ERROR_1 = "No se encontró recurso de clase";
 
-    /**
-     * Mensaje que indica el inicio de la ejecución del programa.
-     */
-    public static final String FINAL =
-            "**** Final del log";
+    /** Mensaje Error-2. */
+    public static final String ERROR_2 = "Ejecutando sin JAR (modo desarrollo)";
 
-    /**
-     * Mensaje que indica que la ejecución ha finalizado correctamente.
-     */
-    public static final String FINAL_CORRECTO =
-            "La ejecución ha finalizado CORRECTAMENTE.";
+    /** Mensaje Error-3. */
+    public static final String ERROR_3 = "No se encontró MANIFEST.MF en el JAR";
 
-    /**
-     * Mensaje que indica que la ejecución ha finalizado con errores.
-     */
-    public static final String FINAL_ERROR =
-            "!!!! La ejecución ha finalizado con ERRORES !!!!";
+    /** Mensaje Error-4. */
+    public static final String ERROR_4 = "Versión no especificada en MANIFEST.MF. Revisar pom.xml";
 
-    /**
-     * Constructor privado para evitar la instanciación de esta clase de utilidades.
-     */
+    /** Mensaje que indica el inicio de la ejecución del programa. */
+    public static final String INICIO = "==== INICIO DE LA APLICACIÓN: version-helper ====";
+
+    /** Mensaje que indica el final de la ejecución del programa. */
+    public static final String FINAL = "==== FINAL DE LA APLICACIÓN: version-helper ====  ";
+
+    /** Mensaje que indica que la ejecución ha finalizado correctamente. */
+    public static final String FINAL_CORRECTO = "La ejecución ha finalizado CORRECTAMENTE.";
+
+    /** Mensaje que indica que la ejecución ha finalizado con errores. */
+    public static final String FINAL_ERROR = "!!!! La ejecución ha finalizado con ERRORES !!!!";
+
+    /** Constructor privado para evitar la instanciación de esta clase de utilidades. */
     private Mensajes() {
         // Constructor privado
     }
