@@ -22,7 +22,7 @@ import java.util.jar.Manifest;
 public class VersionImpl implements Version {
 
     private static final String CLASS_EXTENSION = ".class";
-    private static final String MANIFEST_ATTRIBUTE_VERSION = "Implementation-Version";
+    private static final String MANIFEST_ATTRIBUTE_VERSION = "App-Version";
 
     /**
      * Constructor vacío.
@@ -75,11 +75,14 @@ public class VersionImpl implements Version {
             String version = mainAttributes.getValue(MANIFEST_ATTRIBUTE_VERSION);
 
             if (version == null || version.isEmpty()) {
-                log.debug("La versión no está especificada en MANIFEST.MF para el JAR: {}", jarFile.getName());
+                log.debug(
+                    "La versión no está especificada en MANIFEST.MF para el JAR: {}",
+                    jarFile.getName()
+                );
                 return "Versión no especificada en MANIFEST.MF. Revisar fichero pom.xml";
             }
 
-            log.info("Versión obtenida del JAR {}: {}", jarFile.getName(), version);
+            log.debug("Versión obtenida del JAR {}: {}", jarFile.getName(), version);
             return version;
 
         } catch (IOException ex) {
