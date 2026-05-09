@@ -12,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class FinalDelProgramaHelper {
 
+    /**
+     * Constructor privado para evitar instanciación.
+     */
     private FinalDelProgramaHelper() {
         // Constructor privado para evitar instanciación
     }

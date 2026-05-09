@@ -12,10 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Clase principal para ejecutar el cifrado y descifrado desde línea de comandos.
+ * Clase de demostración para consultar la versión del JAR desde línea de comandos.
  * <p>
  * Uso:
- * {@code java -jar encriptador.jar <claveMaestra> <texto>}
+ * {@code java -jar version-helper.jar}
  * </p>
  */
 @Slf4j
@@ -30,7 +30,7 @@ public class VersionDemo {
     }
 
     /**
-     * Método principal para ejecutar el cifrado y descifrado.
+     * Método principal para ejecutar la consulta de versión.
      */
     public static void main(String[] args) {
 

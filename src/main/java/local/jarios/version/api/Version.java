@@ -5,7 +5,8 @@ package local.jarios.version.api;
  *
  * <p>Uso típico:</p>
  * <pre>{@code
- *   String version = VersionFromManifestService.getVersion(NombreClase.class);
+ *   Version versionService = new VersionImpl();
+ *   String version = versionService.getVersion(NombreClase.class);
  * }</pre>
  *
  * @author Juan
@@ -15,7 +16,7 @@ package local.jarios.version.api;
 public interface Version {
 
     /**
-     * Obtiene la versión (Implementation-Version) desde el MANIFEST.MF
+     * Obtiene la versión (App-Version) desde el MANIFEST.MF
      * del JAR que contiene la clase especificada.
      *
      * @param clazz Clase de referencia para localizar el JAR

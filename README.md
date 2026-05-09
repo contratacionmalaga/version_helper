@@ -6,7 +6,7 @@ Servicio Java para obtener la versión de un fichero JAR consultando el `MANIFES
 
 ## Descripción
 
-La clase `VersionImpl` implementa el servicio para extraer la versión (`Implementation-Version`) 
+La clase `VersionImpl` implementa el servicio para extraer la versión (`App-Version`)
 definida en el archivo `MANIFEST.MF` del JAR que contiene una clase determinada.
 
 Este servicio es útil para obtener de forma programática la versión del artefacto en tiempo de ejecución, 
@@ -16,7 +16,7 @@ especialmente cuando el código está empaquetado en un JAR.
 
 ## Características principales
 
-- Obtiene la versión del atributo `Implementation-Version` del `MANIFEST.MF`.
+- Obtiene la versión del atributo `App-Version` del `MANIFEST.MF`.
 - Maneja correctamente la ejecución en entorno de desarrollo (cuando no se ejecuta desde JAR).
 - Captura y lanza una excepción personalizada en caso de error leyendo el `MANIFEST.MF`.
 - Utiliza SLF4J para logging de diagnóstico.
@@ -59,6 +59,16 @@ Esto copiará el JAR generado y el POM al repositorio local (~/.m2/repository),
 haciéndolo disponible para otros proyectos en la máquina local.
 Incluir como dependencia en el módulo que se quiera utilizar,
 
+### Publicación de releases
+
+Cuando se publica una release en GitHub, el workflow `Publish Release Package`:
+
+- compila y ejecuta las pruebas con JDK 21;
+- publica el artefacto Maven en GitHub Packages;
+- adjunta a la release los JAR generados (`jar`, `sources` y `javadoc`).
+
+El workflow usa `GITHUB_TOKEN` y el repositorio configurado en `distributionManagement`.
+
 ### Usar el paquete en otro proyecto
 
 Agrega la dependencia en el pom.xml del proyecto consumidor:
@@ -66,8 +76,8 @@ Agrega la dependencia en el pom.xml del proyecto consumidor:
 ```
 <dependency>
   <groupId>local.jarios</groupId>
-  <artifactId>version_helper</artifactId>
-  <version>2.0.0</version>         # Última versión disponible
+  <artifactId>version-helper</artifactId>
+  <version>5.3.0</version>
 </dependency>
 ```
 
@@ -95,7 +105,7 @@ Retorna mensajes descriptivos cuando:
 - No se encuentra recurso de clase.
 - No se ejecuta desde un JAR (modo desarrollo).
 - No se encuentra el manifiesto.
-- No existe el atributo de versión.
+- No existe el atributo `App-Version`.
 
 ## Gestión de Excepciones
 

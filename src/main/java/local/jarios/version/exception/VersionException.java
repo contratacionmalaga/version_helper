@@ -1,7 +1,7 @@
 package local.jarios.version.exception;
 
 /**
- * Excepción personalizada que representa errores durante el cifrado o descifrado.
+ * Excepción personalizada que representa errores durante la consulta de versión.
  */
 public class VersionException extends RuntimeException {
 
