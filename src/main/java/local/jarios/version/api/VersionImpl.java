@@ -17,7 +17,7 @@ import java.util.jar.Manifest;
  *
  * @author Juan
  * @since 15/06/2025
- * @version 1.1.0
+ * @version 1.2.0
  */
 @Slf4j
 public class VersionImpl implements Version {
@@ -44,6 +44,18 @@ public class VersionImpl implements Version {
      */
     @Override
     public String getVersion(Class<?> clazz) throws VersionException {
+        return getVersionResult(clazz).legacyValue();
+    }
+
+    /**
+     * Obtiene un resultado tipado con el estado de la consulta de versión.
+     *
+     * @param clazz Clase de referencia
+     * @return resultado tipado de la consulta
+     * @throws VersionException en caso de errores de lectura
+     */
+    @Override
+    public VersionResult getVersionResult(Class<?> clazz) throws VersionException {
 
         if (clazz == null) {
             throw new VersionException("La clase no puede ser nula");
@@ -55,13 +67,13 @@ public class VersionImpl implements Version {
         URL classUrl = getResourceURL(clazz, className);
         if (classUrl == null) {
             log.debug("No se encontró recurso de clase para {}", className);
-            return Mensajes.ERROR_1;
+            return VersionResult.notFound(VersionStatus.CLASS_RESOURCE_NOT_FOUND, Mensajes.ERROR_1);
         }
 
         String protocol = classUrl.getProtocol();
         if (!"jar".equals(protocol)) {
             log.debug("Ejecutando fuera de un JAR (modo desarrollo). URL: {}", classUrl);
-            return Mensajes.ERROR_2;
+            return VersionResult.notFound(VersionStatus.DEVELOPMENT_MODE, Mensajes.ERROR_2);
         }
 
         try {
@@ -74,7 +86,7 @@ public class VersionImpl implements Version {
                 Manifest manifest = jarFile.getManifest();
                 if (manifest == null) {
                     log.debug("No se encontró MANIFEST.MF en el JAR: {}", jarFile.getName());
-                    return Mensajes.ERROR_3;
+                    return VersionResult.notFound(VersionStatus.MANIFEST_NOT_FOUND, Mensajes.ERROR_3);
                 }
 
                 Attributes mainAttributes = manifest.getMainAttributes();
@@ -85,11 +97,11 @@ public class VersionImpl implements Version {
                         "La versión no está especificada en MANIFEST.MF para el JAR: {}",
                         jarFile.getName()
                     );
-                    return Mensajes.ERROR_4;
+                    return VersionResult.notFound(VersionStatus.APP_VERSION_NOT_FOUND, Mensajes.ERROR_4);
                 }
 
                 log.debug("Versión obtenida del JAR {}: {}", jarFile.getName(), version);
-                return version;
+                return VersionResult.found(version);
             }
 
         } catch (IOException ex) {
@@ -105,7 +117,6 @@ public class VersionImpl implements Version {
      * @param clazz Clase de referencia
      * @param className Nombre del archivo de clase
      * @return URL del recurso
-     * @throws VersionException si ocurre algún error
      */
     protected URL getResourceURL(Class<?> clazz, String className) {
         URL url = clazz.getResource(className);

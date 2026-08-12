@@ -1,11 +1,11 @@
 package local.jarios.version;
 
-import local.jarios.version.enums.TipoFinalEjecucion;
-import local.jarios.version.exception.VersionException;
 import local.jarios.version.api.Version;
 import local.jarios.version.api.VersionImpl;
-import local.jarios.version.helpers.FinalDelProgramaHelper;
 import local.jarios.version.common.util.Mensajes;
+import local.jarios.version.enums.TipoFinalEjecucion;
+import local.jarios.version.exception.VersionException;
+import local.jarios.version.helpers.FinalDelProgramaHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 public class VersionDemo {
 
-   /**
+    /**
      * Constructor por defecto.
      * Esta clase solo contiene el método main, no se debe instanciar.
      */
@@ -34,41 +34,39 @@ public class VersionDemo {
      */
     public static void main(String[] args) {
 
-      // Inicio del log
-      log.info(Mensajes.INICIO);
+        log.info(Mensajes.INICIO);
 
-      // Carga de los mensajes de error
-      List<String> mensajesError = Arrays.asList(
-          Mensajes.ERROR_1,
-          Mensajes.ERROR_2,
-          Mensajes.ERROR_3,
-          Mensajes.ERROR_4
-      );
+        List<String> mensajesError = Arrays.asList(
+            Mensajes.ERROR_1,
+            Mensajes.ERROR_2,
+            Mensajes.ERROR_3,
+            Mensajes.ERROR_4
+        );
 
-      try {
+        try {
+            Version versionService = new VersionImpl();
+            log.info("El servicio de consulta de la versión del JAR se ha creado correctamente.");
 
-        // Creación del Servicio
-        Version versionService = new VersionImpl();
-        log.info("El servicio de consulta de la versión del JAR se ha creado correctamente.");
+            String version = versionService.getVersion(VersionDemo.class);
 
-        // Obtengo la version
-        String version = versionService.getVersion(VersionDemo.class);
+            if (mensajesError.contains(version)) {
+                log.warn("No se obtuvo la versión real, mensaje: {}", version);
+            } else {
+                log.info("Versión obtenida correctamente: {}", version);
+            }
 
-        // Discrimino si el valor obtenido pertenece a la lista de mensajes de error
-        if (mensajesError.contains(version)) {
-          log.warn("No se obtuvo la versión real, mensaje: {}", version);
-          FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
-        } else {
-          log.info("Versión obtenida correctamente: {}", version);
-          FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
+            finalizarProceso(TipoFinalEjecucion.CORRECTO);
+        } catch (VersionException ex) {
+            finalizarProceso(TipoFinalEjecucion.ERROR, ex.getMessage());
         }
+    }
 
-        // Final de la ejecución
-        FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.CORRECTO);
+    private static void finalizarProceso(TipoFinalEjecucion tipoFinal) {
+        finalizarProceso(tipoFinal, null);
+    }
 
-      } catch (VersionException ex) {
-
-        FinalDelProgramaHelper.finalizar(TipoFinalEjecucion.ERROR, ex.getMessage());
-      }
+    private static void finalizarProceso(TipoFinalEjecucion tipoFinal, String mensajeError) {
+        FinalDelProgramaHelper.finalizar(tipoFinal, mensajeError);
+        System.exit(FinalDelProgramaHelper.resolverCodigoSalida(tipoFinal));
     }
 }

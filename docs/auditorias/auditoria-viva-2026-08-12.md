@@ -129,7 +129,7 @@ Documentación previa:
 
 Severidad: Media  
 Categoría: API / robustez  
-Estado: Pendiente  
+Estado: Hecho  
 Hito asociado: M-01
 
 Evidencia:
@@ -155,7 +155,7 @@ No se recomienda romper directamente `getVersion` sin plan de versión mayor y n
 
 Severidad: Media  
 Categoría: Diseño de librería / seguridad operativa  
-Estado: Pendiente  
+Estado: Hecho  
 Hito asociado: M-02
 
 Evidencia:
@@ -177,7 +177,7 @@ Recomendación:
 
 Severidad: Media  
 Categoría: Testing / empaquetado  
-Estado: Pendiente  
+Estado: Hecho  
 Hito asociado: M-03
 
 Evidencia:
@@ -223,7 +223,7 @@ Elegir una:
 
 Severidad: Baja  
 Categoría: Calidad / configuración  
-Estado: Pendiente  
+Estado: Hecho  
 Hito asociado: M-05
 
 Evidencia:
@@ -337,7 +337,7 @@ Valorar frecuencia semanal, agrupar actualizaciones Maven y separar majors de mi
 
 Severidad: Baja  
 Categoría: Limpieza / demo  
-Estado: Pendiente  
+Estado: Hecho  
 Hito asociado: M-02
 
 Evidencia:
@@ -369,11 +369,11 @@ La auditoría histórica de `doc/auditoria/2026_05_09/` indicaba varios problema
 
 | Hito | Objetivo | Hallazgos | Prioridad | Estado | Criterio de cierre | Verificación mínima |
 |---|---|---:|---|---|---|---|
-| M-01 | Definir contrato de API para ausencia/error de versión | H-001 | Alta | Pendiente | API actual documentada o API tipada nueva añadida sin romper compatibilidad | `mvnw -B clean verify` |
-| M-02 | Sacar o aislar lógica `System.exit` del artefacto core | H-002, H-010 | Alta | Pendiente | `src/main` no expone helpers que terminen la JVM, o decisión documentada | `mvnw -B clean verify` |
-| M-03 | Verificar automáticamente el manifiesto del JAR real | H-003 | Alta | Pendiente | Fase `verify` falla si faltan `App-Version` o `App-Name` | `mvnw -B clean verify` |
+| M-01 | Definir contrato de API para ausencia/error de versión | H-001 | Alta | Hecho | API tipada `VersionResult` añadida sin romper `getVersion(Class<?>)` | `mvnw -B clean verify` |
+| M-02 | Sacar o aislar lógica `System.exit` del artefacto core | H-002, H-010 | Alta | Hecho | `System.exit` queda solo en la demo de test, no en `src/main` | `mvnw -B clean verify` |
+| M-03 | Verificar automáticamente el manifiesto del JAR real | H-003 | Alta | Hecho | Fase `verify` valida `App-Version` y `App-Name` con `maven-antrun-plugin` | `mvnw -B clean verify` |
 | M-04 | Resolver annotation processing implícito | H-004 | Media | Hecho | Build sin aviso de annotation processing implícito | `mvnw -B clean verify` |
-| M-05 | Normalizar Checkstyle | H-005 | Media | Pendiente | Checkstyle configurado y activo, o propiedades eliminadas | `mvnw -B clean verify` |
+| M-05 | Normalizar Checkstyle | H-005 | Media | Hecho | Propiedades Checkstyle no usadas eliminadas | `mvnw -B clean verify` |
 | M-06 | Actualizar dependencias/plugins de forma controlada | H-006, H-007 | Media | En curso | Actualizaciones estables aplicadas o descartadas con motivo | `mvnw -B clean verify`; `mvnw -B dependency:analyze`; `mvnw -B spotbugs:check` |
 | M-07 | Fijar acción OWASP Dependency Check | H-008 | Media | Hecho | Workflow usa tag/SHA estable, no `@main` | `mvnw -B clean verify`; pendiente CI remoto tras PR |
 | M-08 | Ajustar estrategia Dependabot | H-009 | Baja | Pendiente | Frecuencia/grupos configurados según política decidida | PR Dependabot generado correctamente |
@@ -455,7 +455,7 @@ Motivo:
 - La superficie funcional es pequeña.
 - Los riesgos principales están en diseño de API, reproducibilidad de CI y limpieza de empaquetado, no en fallos detectados de ejecución.
 
-El proyecto puede seguir publicándose, pero antes de añadir funcionalidad nueva conviene cerrar M-02 y M-03. Antes de romper o rediseñar la API pública, cerrar D-01 con una decisión explícita.
+El proyecto puede seguir publicándose. Los hitos M-02 y M-03 ya quedan cerrados en la rama `jarp/completar-hitos-auditoria`; cualquier cambio adicional de API deberá mantener actualizada esta auditoría viva.
 
 ## 14. Seguimiento de mejoras aplicadas en `jarp/auditoria-release-prep`
 
@@ -542,3 +542,41 @@ Tras publicar `v6.0.1`, GitHub Actions emitió avisos no bloqueantes indicando q
 ### Estado de auditoría viva
 
 Hecho. Este cambio cumple la regla operativa incorporada en la sección 14: la mejora derivada de la auditoría se registra en este documento principal en el mismo cambio que la aplica y queda validada por CI de PR #20.
+## 16. Seguimiento de cierre de hitos de diseño y empaquetado
+
+Fecha de actualización: 2026-08-12  
+Rama: `jarp/completar-hitos-auditoria`  
+Estado: `Hecho`
+
+### Cambios aplicados
+
+- `M-01 / H-001`: Hecho. Añadida API tipada `VersionResult` y `VersionStatus` mediante `Version#getVersionResult(Class<?>)`. El método histórico `getVersion(Class<?>)` se mantiene por compatibilidad.
+- `M-02 / H-002`: Hecho. `FinalDelProgramaHelper` deja de llamar a `System.exit`; ahora solo registra la finalización y expone `resolverCodigoSalida(...)`. La demo de test mantiene `System.exit` en su capa de entrada.
+- `M-02 / H-010`: Hecho. `VersionDemo` se simplifica y elimina llamadas redundantes a finalización.
+- `M-03 / H-003`: Hecho. Añadida verificación automática del manifiesto del JAR real en fase `verify` mediante `maven-antrun-plugin`.
+- `M-05 / H-005`: Hecho. Eliminadas propiedades Checkstyle declaradas pero no usadas.
+- Versión preparada: `6.1.0`, por añadir API pública y cambiar comportamiento de un helper público.
+
+### Verificación ejecutada
+
+```powershell
+.\mvnw.cmd -B clean verify
+.\mvnw.cmd -B dependency:analyze
+.\mvnw.cmd -B spotbugs:check
+.\mvnw.cmd -B versions:display-dependency-updates
+.\mvnw.cmd -B versions:display-plugin-updates
+```
+
+Resultados:
+
+- Build correcto para `version-helper 6.1.0`.
+- Tests: 10 ejecutados, 0 fallos, 0 errores.
+- `verify`: ejecuta `verify-generated-jar-manifest` y valida el manifiesto del JAR real.
+- `dependency:analyze`: sin problemas.
+- `spotbugs:check`: 0 bugs, 0 errores.
+
+### Pendiente tras esta rama
+
+- CI remoto de PR #21 confirmado en verde.
+- Si la PR se fusiona, publicar release `v6.1.0`.
+- Mantener pendientes las evaluaciones separadas de Logback, JUnit 6, AssertJ milestone, SLF4J alpha y Surefire milestone.

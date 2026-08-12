@@ -5,9 +5,10 @@ import local.jarios.version.enums.TipoFinalEjecucion;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Clase utilitaria para finalizar la ejecución del programa
- * registrando el resultado final mediante logs y terminando el proceso
- * con el código adecuado.
+ * Clase utilitaria para registrar la finalización del programa.
+ *
+ * <p>Esta clase no termina la JVM. Si una aplicación CLI necesita finalizar el proceso,
+ * debe hacerlo explícitamente en su capa de entrada.</p>
  */
 @Slf4j
 public final class FinalDelProgramaHelper {
@@ -20,7 +21,8 @@ public final class FinalDelProgramaHelper {
     }
 
     /**
-     * Finaliza la ejecución del programa.
+     * Registra la finalización del programa sin terminar la JVM.
+     *
      * @param tipoFinal Tipo de finalización
      */
     public static void finalizar(TipoFinalEjecucion tipoFinal) {
@@ -28,34 +30,39 @@ public final class FinalDelProgramaHelper {
     }
 
     /**
-     * Finaliza la ejecución del programa, registrando un mensaje adicional en caso de error.
+     * Registra la finalización del programa, con mensaje adicional en caso de error, sin terminar la JVM.
+     *
      * @param tipoFinal Tipo de finalización
      * @param mensajeError Mensaje opcional, solo usado si tipoFinal es ERROR
      */
     public static void finalizar(TipoFinalEjecucion tipoFinal, String mensajeError) {
         String mensaje;
-        int exitCode;
 
         if (tipoFinal == TipoFinalEjecucion.CORRECTO) {
             mensaje = Mensajes.FINAL_CORRECTO;
-            exitCode = 0;
         } else {
             mensaje = Mensajes.FINAL_ERROR;
-            exitCode = 1;
             if (mensajeError != null && !mensajeError.isBlank()) {
                 mensaje += " Detalle: " + mensajeError;
             }
         }
 
-        // Registrar logs
         log.info(mensaje);
         log.info(Mensajes.FINAL);
 
-        // Forzar flush para que se muestre todo antes de salir
         System.out.flush();
         System.err.flush();
 
-        // Salir
-        System.exit(exitCode);
+        log.debug("Código de salida sugerido: {}", resolverCodigoSalida(tipoFinal));
+    }
+
+    /**
+     * Resuelve el código de salida recomendado para un tipo de finalización.
+     *
+     * @param tipoFinal Tipo de finalización
+     * @return 0 si es correcto, 1 si es error
+     */
+    public static int resolverCodigoSalida(TipoFinalEjecucion tipoFinal) {
+        return tipoFinal == TipoFinalEjecucion.CORRECTO ? 0 : 1;
     }
 }
