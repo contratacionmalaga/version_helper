@@ -505,3 +505,40 @@ Resultados:
 ### Regla operativa incorporada
 
 Cada mejora derivada de esta auditoría debe actualizar este documento principal de auditoría viva en el mismo commit o PR que aplica la mejora. Los anexos pueden complementar el detalle, pero no sustituyen la actualización de estado en este documento.
+
+## 15. Seguimiento de eliminación de elementos deprecados en GitHub Actions
+
+Fecha de actualización: 2026-08-12  
+Rama: `jarp/eliminar-actions-deprecadas`  
+Estado: `Hecho`
+
+### Motivo
+
+Tras publicar `v6.0.1`, GitHub Actions emitió avisos no bloqueantes indicando que `actions/setup-java@v4` está deprecada y que algunas acciones basadas en Node 20 están siendo forzadas a ejecutarse con Node 24.
+
+### Cambios aplicados
+
+- `.github/workflows/maven-ci.yml`:
+  - `actions/checkout@v4 -> actions/checkout@v7`.
+  - `actions/setup-java@v4 -> actions/setup-java@v5`.
+  - `actions/upload-artifact@v4 -> actions/upload-artifact@v7`.
+  - Eliminado input inválido `out` de `Dependency-Check_Action@1.1.0`; esa versión escribe en `reports` por defecto.
+- `.github/workflows/release-package.yml`:
+  - `actions/checkout@v4 -> actions/checkout@v7`.
+  - `actions/setup-java@v4 -> actions/setup-java@v5`.
+
+### Verificación requerida
+
+- Verificación local:
+
+```powershell
+.\mvnw.cmd -B clean verify
+```
+
+- Verificación remota:
+  - CI de pull request #20 en verde tras actualizar acciones y eliminar el input inválido `out`.
+  - En la siguiente release, comprobar que `Publish Release Package` no muestra los avisos de `setup-java@v4` ni acciones Node 20.
+
+### Estado de auditoría viva
+
+Hecho. Este cambio cumple la regla operativa incorporada en la sección 14: la mejora derivada de la auditoría se registra en este documento principal en el mismo cambio que la aplica y queda validada por CI de PR #20.
