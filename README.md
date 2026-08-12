@@ -68,7 +68,7 @@ Cuando se publica una release en GitHub, el workflow `Publish Release Package`:
 - adjunta a la release los JAR generados (`jar`, `sources` y `javadoc`).
 
 El workflow usa `GITHUB_TOKEN` y el repositorio configurado en `distributionManagement`.
-Para publicar la versión `6.0.0`, crea una release con el tag `v6.0.0`.
+Para publicar la versión `6.0.1`, crea una release con el tag `v6.0.1`.
 
 ### Usar el paquete en otro proyecto
 
@@ -78,7 +78,7 @@ Agrega la dependencia en el pom.xml del proyecto consumidor:
 <dependency>
   <groupId>local.jarios</groupId>
   <artifactId>version-helper</artifactId>
-  <version>6.0.0</version>
+  <version>6.0.1</version>
 </dependency>
 ```
 
