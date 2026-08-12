@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
     <artifactId>version-helper</artifactId>
-    <version>6.0.0</version>
+    <version>6.0.1</version>
     <packaging>jar</packaging>
 
     <name>version-helper</name>
@@ -42,20 +42,20 @@
         <assertj.version>3.21.0</assertj.version>
         <junit.version>5.8.2</junit.version>
         <logback.version>1.5.26</logback.version>
-        <lombok.version>1.18.42</lombok.version>
+        <lombok.version>1.18.46</lombok.version>
         <slf4j.version>2.0.17</slf4j.version>
 
         <!-- Plugin versions -->
-        <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
         <maven.checkstyle.plugin.version>3.6.0</maven.checkstyle.plugin.version>
-        <maven.dependency.plugin.version>3.9.0</maven.dependency.plugin.version>
-        <maven.enforcer.plugin.version>3.6.2</maven.enforcer.plugin.version>
-        <maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
+        <maven.dependency.plugin.version>3.11.0</maven.dependency.plugin.version>
+        <maven.enforcer.plugin.version>3.6.3</maven.enforcer.plugin.version>
+        <maven.jar.plugin.version>3.5.1</maven.jar.plugin.version>
         <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
         <maven.release.plugin.version>3.3.1</maven.release.plugin.version>
         <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
         <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
-        <spotbugs.maven.plugin.version>4.9.8.2</spotbugs.maven.plugin.version>
+        <spotbugs.maven.plugin.version>4.10.3.0</spotbugs.maven.plugin.version>
         <versions.maven.plugin.version>2.21.0</versions.maven.plugin.version>
 
         <!-- Quality/security -->
@@ -130,6 +130,13 @@
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
