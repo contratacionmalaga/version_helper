@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>local.jarios</groupId>
     <artifactId>version-helper</artifactId>
-    <version>6.0.1</version>
+    <version>6.1.0</version>
     <packaging>jar</packaging>
 
     <name>version-helper</name>
@@ -46,8 +46,8 @@
         <slf4j.version>2.0.17</slf4j.version>
 
         <!-- Plugin versions -->
+        <maven.antrun.plugin.version>3.2.0</maven.antrun.plugin.version>
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
-        <maven.checkstyle.plugin.version>3.6.0</maven.checkstyle.plugin.version>
         <maven.dependency.plugin.version>3.11.0</maven.dependency.plugin.version>
         <maven.enforcer.plugin.version>3.6.3</maven.enforcer.plugin.version>
         <maven.jar.plugin.version>3.5.1</maven.jar.plugin.version>
@@ -60,9 +60,6 @@
 
         <!-- Quality/security -->
         <findsecbugs.plugin.version>1.12.0</findsecbugs.plugin.version>
-
-        <!-- Thresholds -->
-        <checkstyle.max.violations>10000</checkstyle.max.violations>
 
     </properties>
 
@@ -262,6 +259,42 @@
                         </plugin>
                     </plugins>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven.antrun.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>verify-generated-jar-manifest</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <property name="manifest.check.dir" value="${project.build.directory}/manifest-check" />
+                                <delete dir="${manifest.check.dir}" />
+                                <mkdir dir="${manifest.check.dir}" />
+                                <unzip src="${project.build.directory}/${project.build.finalName}.jar" dest="${manifest.check.dir}">
+                                    <patternset>
+                                        <include name="META-INF/MANIFEST.MF" />
+                                    </patternset>
+                                </unzip>
+                                <loadfile property="generated.jar.manifest" srcFile="${manifest.check.dir}/META-INF/MANIFEST.MF" />
+                                <condition property="manifest.has.app.name">
+                                    <contains string="${generated.jar.manifest}" substring="App-Name: ${project.artifactId}" />
+                                </condition>
+                                <condition property="manifest.has.app.version">
+                                    <contains string="${generated.jar.manifest}" substring="App-Version: ${project.version}" />
+                                </condition>
+                                <fail unless="manifest.has.app.name" message="El JAR generado no contiene App-Name: ${project.artifactId}" />
+                                <fail unless="manifest.has.app.version" message="El JAR generado no contiene App-Version: ${project.version}" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

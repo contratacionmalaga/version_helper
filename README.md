@@ -35,6 +35,24 @@ System.out.println("Versión obtenida: " + version);
 
 Donde TuClase.class es una clase que se encuentra dentro del JAR cuyo manifiesto quieres consultar.
 
+
+### Uso con resultado tipado
+
+Desde la versión `6.1.0`, se recomienda usar la API tipada para distinguir entre una versión encontrada y estados sin versión:
+
+```
+Version versionService = new VersionImpl();
+VersionResult result = versionService.getVersionResult(TuClase.class);
+
+if (result.isFound()) {
+    System.out.println("Versión obtenida: " + result.version());
+} else {
+    System.out.println("No se obtuvo versión: " + result.status() + " - " + result.message());
+}
+```
+
+El método `getVersion(Class<?>)` se mantiene por compatibilidad y sigue devolviendo la versión o un mensaje descriptivo.
+
 ## Instalación y uso (maven)
 
 ### Generar el paquete JAR
@@ -68,7 +86,7 @@ Cuando se publica una release en GitHub, el workflow `Publish Release Package`:
 - adjunta a la release los JAR generados (`jar`, `sources` y `javadoc`).
 
 El workflow usa `GITHUB_TOKEN` y el repositorio configurado en `distributionManagement`.
-Para publicar la versión `6.0.1`, crea una release con el tag `v6.0.1`.
+Para publicar la versión `6.1.0`, crea una release con el tag `v6.1.0`.
 
 ### Usar el paquete en otro proyecto
 
@@ -78,7 +96,7 @@ Agrega la dependencia en el pom.xml del proyecto consumidor:
 <dependency>
   <groupId>local.jarios</groupId>
   <artifactId>version-helper</artifactId>
-  <version>6.0.1</version>
+  <version>6.1.0</version>
 </dependency>
 ```
 

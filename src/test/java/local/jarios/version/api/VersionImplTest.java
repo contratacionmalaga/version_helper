@@ -41,11 +41,36 @@ class VersionImplTest {
     }
 
     @Test
+    void getVersionResultReturnsTypedDevelopmentModeOutsideJar() {
+        VersionImpl version = new VersionImpl();
+
+        VersionResult result = version.getVersionResult(VersionImplTest.class);
+
+        assertThat(result.status()).isEqualTo(VersionStatus.DEVELOPMENT_MODE);
+        assertThat(result.version()).isNull();
+        assertThat(result.message()).isEqualTo(Mensajes.ERROR_2);
+        assertThat(result.isFound()).isFalse();
+    }
+
+    @Test
     void getVersionReadsAppVersionFromManifest() throws IOException {
         Path jarPath = createJarWithManifest("5.3.0");
         VersionImpl version = versionReturning(jarResourceUrl(jarPath));
 
         assertThat(version.getVersion(VersionImplTest.class)).isEqualTo("5.3.0");
+    }
+
+    @Test
+    void getVersionResultReturnsTypedVersionWhenManifestContainsAppVersion() throws IOException {
+        Path jarPath = createJarWithManifest("5.3.0");
+        VersionImpl version = versionReturning(jarResourceUrl(jarPath));
+
+        VersionResult result = version.getVersionResult(VersionImplTest.class);
+
+        assertThat(result.status()).isEqualTo(VersionStatus.VERSION_FOUND);
+        assertThat(result.version()).isEqualTo("5.3.0");
+        assertThat(result.message()).isNull();
+        assertThat(result.isFound()).isTrue();
     }
 
     @Test
