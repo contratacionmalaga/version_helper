@@ -1,19 +1,18 @@
 package local.jarios.version.api;
 
-import local.jarios.version.common.util.Mensajes;
-import local.jarios.version.exception.VersionException;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import local.jarios.version.common.util.Mensajes;
+import local.jarios.version.exception.VersionException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Servicio para obtener la versión de un JAR a partir de su MANIFEST.MF
- * usando como referencia una clase contenida en el JAR.
+ * Servicio para obtener la versión de un JAR a partir de su MANIFEST.MF usando como referencia una
+ * clase contenida en el JAR.
  *
  * @author Juan
  * @since 15/06/2025
@@ -22,105 +21,101 @@ import java.util.jar.Manifest;
 @Slf4j
 public class VersionImpl implements Version {
 
-    /** Extensión de los recursos compilados de clase. */
-    private static final String CLASS_EXTENSION = ".class";
+  /** Extensión de los recursos compilados de clase. */
+  private static final String CLASS_EXTENSION = ".class";
 
-    /** Atributo del manifiesto que contiene la versión de la aplicación. */
-    private static final String MANIFEST_ATTRIBUTE_VERSION = "App-Version";
+  /** Atributo del manifiesto que contiene la versión de la aplicación. */
+  private static final String MANIFEST_ATTRIBUTE_VERSION = "App-Version";
 
-    /**
-     * Constructor vacío.
-     */
-    public VersionImpl() {
-        // Constructor vacío
+  /** Constructor vacío. */
+  public VersionImpl() {
+    // Constructor vacío
+  }
+
+  /**
+   * Obtiene la versión del JAR que contiene la clase indicada.
+   *
+   * @param clazz Clase de referencia
+   * @return Versión obtenida del MANIFEST.MF, o mensaje de contexto si no se encuentra
+   * @throws VersionException en caso de errores de lectura
+   */
+  @Override
+  public String getVersion(Class<?> clazz) throws VersionException {
+    return getVersionResult(clazz).legacyValue();
+  }
+
+  /**
+   * Obtiene un resultado tipado con el estado de la consulta de versión.
+   *
+   * @param clazz Clase de referencia
+   * @return resultado tipado de la consulta
+   * @throws VersionException en caso de errores de lectura
+   */
+  @Override
+  public VersionResult getVersionResult(Class<?> clazz) throws VersionException {
+
+    if (clazz == null) {
+      throw new VersionException("La clase no puede ser nula");
     }
 
-    /**
-     * Obtiene la versión del JAR que contiene la clase indicada.
-     *
-     * @param clazz Clase de referencia
-     * @return Versión obtenida del MANIFEST.MF, o mensaje de contexto si no se encuentra
-     * @throws VersionException en caso de errores de lectura
-     */
-    @Override
-    public String getVersion(Class<?> clazz) throws VersionException {
-        return getVersionResult(clazz).legacyValue();
+    String className = clazz.getSimpleName() + CLASS_EXTENSION;
+    log.debug("Obteniendo versión para la clase: {}", className);
+
+    URL classUrl = getResourceURL(clazz, className);
+    if (classUrl == null) {
+      log.debug("No se encontró recurso de clase para {}", className);
+      return VersionResult.notFound(VersionStatus.CLASS_RESOURCE_NOT_FOUND, Mensajes.ERROR_1);
     }
 
-    /**
-     * Obtiene un resultado tipado con el estado de la consulta de versión.
-     *
-     * @param clazz Clase de referencia
-     * @return resultado tipado de la consulta
-     * @throws VersionException en caso de errores de lectura
-     */
-    @Override
-    public VersionResult getVersionResult(Class<?> clazz) throws VersionException {
-
-        if (clazz == null) {
-            throw new VersionException("La clase no puede ser nula");
-        }
-
-        String className = clazz.getSimpleName() + CLASS_EXTENSION;
-        log.debug("Obteniendo versión para la clase: {}", className);
-
-        URL classUrl = getResourceURL(clazz, className);
-        if (classUrl == null) {
-            log.debug("No se encontró recurso de clase para {}", className);
-            return VersionResult.notFound(VersionStatus.CLASS_RESOURCE_NOT_FOUND, Mensajes.ERROR_1);
-        }
-
-        String protocol = classUrl.getProtocol();
-        if (!"jar".equals(protocol)) {
-            log.debug("Ejecutando fuera de un JAR (modo desarrollo). URL: {}", classUrl);
-            return VersionResult.notFound(VersionStatus.DEVELOPMENT_MODE, Mensajes.ERROR_2);
-        }
-
-        try {
-            JarURLConnection jarConnection = (JarURLConnection) classUrl.openConnection();
-            jarConnection.setUseCaches(false);
-
-            try (JarFile jarFile = jarConnection.getJarFile()) {
-                log.debug("Conexión con JAR establecida correctamente: {}", jarFile.getName());
-
-                Manifest manifest = jarFile.getManifest();
-                if (manifest == null) {
-                    log.debug("No se encontró MANIFEST.MF en el JAR: {}", jarFile.getName());
-                    return VersionResult.notFound(VersionStatus.MANIFEST_NOT_FOUND, Mensajes.ERROR_3);
-                }
-
-                Attributes mainAttributes = manifest.getMainAttributes();
-                String version = mainAttributes.getValue(MANIFEST_ATTRIBUTE_VERSION);
-
-                if (version == null || version.isEmpty()) {
-                    log.debug(
-                        "La versión no está especificada en MANIFEST.MF para el JAR: {}",
-                        jarFile.getName()
-                    );
-                    return VersionResult.notFound(VersionStatus.APP_VERSION_NOT_FOUND, Mensajes.ERROR_4);
-                }
-
-                log.debug("Versión obtenida del JAR {}: {}", jarFile.getName(), version);
-                return VersionResult.found(version);
-            }
-
-        } catch (IOException ex) {
-            String mensaje = "Error leyendo el MANIFEST.MF dentro del JAR: " + ex.getMessage();
-            log.error(mensaje, ex);
-            throw new VersionException(mensaje, ex);
-        }
+    String protocol = classUrl.getProtocol();
+    if (!"jar".equals(protocol)) {
+      log.debug("Ejecutando fuera de un JAR (modo desarrollo). URL: {}", classUrl);
+      return VersionResult.notFound(VersionStatus.DEVELOPMENT_MODE, Mensajes.ERROR_2);
     }
 
-    /**
-     * Obtiene la URL del recurso de clase.
-     *
-     * @param clazz Clase de referencia
-     * @param className Nombre del archivo de clase
-     * @return URL del recurso
-     */
-    protected URL getResourceURL(Class<?> clazz, String className) {
-        URL url = clazz.getResource(className);
-        log.debug("URL de la clase {}: {}", className, url);
-        return url;
+    try {
+      JarURLConnection jarConnection = (JarURLConnection) classUrl.openConnection();
+      jarConnection.setUseCaches(false);
+
+      try (JarFile jarFile = jarConnection.getJarFile()) {
+        log.debug("Conexión con JAR establecida correctamente: {}", jarFile.getName());
+
+        Manifest manifest = jarFile.getManifest();
+        if (manifest == null) {
+          log.debug("No se encontró MANIFEST.MF en el JAR: {}", jarFile.getName());
+          return VersionResult.notFound(VersionStatus.MANIFEST_NOT_FOUND, Mensajes.ERROR_3);
+        }
+
+        Attributes mainAttributes = manifest.getMainAttributes();
+        String version = mainAttributes.getValue(MANIFEST_ATTRIBUTE_VERSION);
+
+        if (version == null || version.isEmpty()) {
+          log.debug(
+              "La versión no está especificada en MANIFEST.MF para el JAR: {}", jarFile.getName());
+          return VersionResult.notFound(VersionStatus.APP_VERSION_NOT_FOUND, Mensajes.ERROR_4);
+        }
+
+        log.debug("Versión obtenida del JAR {}: {}", jarFile.getName(), version);
+        return VersionResult.found(version);
+      }
+
+    } catch (IOException ex) {
+      String mensaje = "Error leyendo el MANIFEST.MF dentro del JAR: " + ex.getMessage();
+      log.error(mensaje, ex);
+      throw new VersionException(mensaje, ex);
     }
+  }
+
+  /**
+   * Obtiene la URL del recurso de clase.
+   *
+   * @param clazz Clase de referencia
+   * @param className Nombre del archivo de clase
+   * @return URL del recurso
+   */
+  protected URL getResourceURL(Class<?> clazz, String className) {
+    URL url = clazz.getResource(className);
+    log.debug("URL de la clase {}: {}", className, url);
+    return url;
+  }
 }

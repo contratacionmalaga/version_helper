@@ -1,283 +1,238 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>local.jarios</groupId>
-        <artifactId>jarios-parent</artifactId>
-        <version>1.0.1</version>
-        <relativePath>../jarios-parent/pom.xml</relativePath>
-    </parent>
-    <artifactId>version-helper</artifactId>
-    <version>6.1.1</version>
-    <packaging>jar</packaging>
-
-    <name>version-helper</name>
-    <description>Devuelve la versión de un fichero jar mediante la consulta del MANIFEST.MF</description>
-
-    <scm>
-        <connection>scm:git:git@github.com:contratacionmalaga/version_helper.git</connection>
-        <developerConnection>scm:git:git@github.com:contratacionmalaga/version_helper.git</developerConnection>
-        <url>https://github.com/contratacionmalaga/version_helper.git</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>github-releases</id>
-            <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/version_helper</url>
-        </repository>
-        <snapshotRepository>
-            <id>github-snapshots</id>
-            <!-- Cambié la URL a la correcta para GitHub Packages -->
-            <url>https://maven.pkg.github.com/contratacionmalaga/version_helper</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <properties>
-
-        <!-- Version management -->
-        <version.trimmed>${project.version}</version.trimmed>
-        <final.name>${project.artifactId}-${version.trimmed}</final.name>
-
-    </properties>
-
-    <dependencies>
-
-        <!-- assertj.version -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Dependencias para JUnit 5 -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Logback Classic: implementacion de logging solo para pruebas y demos locales -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-
-        <!-- Nombre del JAR por defecto (incluye -SNAPSHOT si aplica) -->
-        <finalName>${final.name}</finalName>
-
-        <plugins>
-
-            <!-- maven.compiler.plugin.version -->
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>local.jarios</groupId>
+    <artifactId>jarios-parent</artifactId>
+    <version>1.0.9</version>
+    <relativePath>../jarios-parent/pom.xml</relativePath>
+  </parent>
+  <artifactId>version-helper</artifactId>
+  <version>6.1.2</version>
+  <packaging>jar</packaging>
+  <name>version-helper</name>
+  <description>Devuelve la versión de un fichero jar mediante la consulta del MANIFEST.MF</description>
+  <scm>
+    <connection>scm:git:git@github.com:contratacionmalaga/version_helper.git</connection>
+    <developerConnection>scm:git:git@github.com:contratacionmalaga/version_helper.git</developerConnection>
+    <url>https://github.com/contratacionmalaga/version_helper.git</url>
+    <tag>HEAD</tag>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>github-releases</id>
+      <!-- Cambié la URL a la correcta para GitHub Packages -->
+      <url>https://maven.pkg.github.com/contratacionmalaga/version_helper</url>
+    </repository>
+    <snapshotRepository>
+      <id>github-snapshots</id>
+      <!-- Cambié la URL a la correcta para GitHub Packages -->
+      <url>https://maven.pkg.github.com/contratacionmalaga/version_helper</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <properties>
+    <!-- Version management -->
+    <version.trimmed>${project.version}</version.trimmed>
+    <final.name>${project.artifactId}-${version.trimmed}</final.name>
+  </properties>
+  <dependencies>
+    <!-- assertj.version -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Dependencias para JUnit 5 -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Logback Classic: implementacion de logging solo para pruebas y demos locales -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <!-- Nombre del JAR por defecto (incluye -SNAPSHOT si aplica) -->
+    <finalName>${final.name}</finalName>
+    <plugins>
+      <!-- maven.compiler.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <!-- maven.surefire.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <useModulePath>false</useModulePath>
+        </configuration>
+      </plugin>
+      <!-- maven.dependency.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <ignoredUnusedDeclaredDependencies>
+            <ignoredUnusedDeclaredDependency>ch.qos.logback:logback-classic</ignoredUnusedDeclaredDependency>
+          </ignoredUnusedDeclaredDependencies>
+        </configuration>
+      </plugin>
+      <!-- maven.enforcer.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>${maven.minimum.version}</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- maven.jar.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+            </manifest>
+            <manifestEntries>
+              <App-Version>${project.version}</App-Version>
+              <App-Name>${project.artifactId}</App-Name>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <!-- maven.javadoc.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+          <show>private</show>
+          <nohelp>true</nohelp>
+        </configuration>
+      </plugin>
+      <!-- maven.release.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <scmCommentPrefix>[RELEASE]</scmCommentPrefix>
+          <pushChanges>true</pushChanges>
+        </configuration>
+      </plugin>
+      <!-- maven.source.plugin.version -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- spotbugs.maven.plugin.version -->
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <configuration>
+          <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.plugin.version}</version>
-                <configuration>
-                    <release>${maven.compiler.release}</release>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
+              <groupId>com.h3xstream.findsecbugs</groupId>
+              <artifactId>findsecbugs-plugin</artifactId>
+              <version>${findsecbugs.plugin.version}</version>
             </plugin>
-
-            <!-- maven.surefire.plugin.version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.plugin.version}</version>
-                <configuration>
-                    <useModulePath>false</useModulePath>
-                </configuration>
-            </plugin>
-
-            <!-- maven.dependency.plugin.version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven.dependency.plugin.version}</version>
-                <configuration>
-                    <ignoredUnusedDeclaredDependencies>
-                        <ignoredUnusedDeclaredDependency>ch.qos.logback:logback-classic</ignoredUnusedDeclaredDependency>
-                    </ignoredUnusedDeclaredDependencies>
-                </configuration>
-            </plugin>
-
-            <!-- maven.enforcer.plugin.version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven.enforcer.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>${maven.minimum.version}</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- maven.jar.plugin.version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${maven.jar.plugin.version}</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                        <manifestEntries>
-                            <App-Version>${project.version}</App-Version>
-                            <App-Name>${project.artifactId}</App-Name>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <!-- maven.javadoc.plugin.version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven.javadoc.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <release>${maven.compiler.release}</release>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                </configuration>
-            </plugin>
-
-            <!-- maven.release.plugin.version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven.release.plugin.version}</version>
-                <configuration>
-                    <tagNameFormat>v@{project.version}</tagNameFormat>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <scmCommentPrefix>[RELEASE]</scmCommentPrefix>
-                    <pushChanges>true</pushChanges>
-                </configuration>
-            </plugin>
-
-            <!-- maven.source.plugin.version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven.source.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- spotbugs.maven.plugin.version -->
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>${spotbugs.maven.plugin.version}</version>
-                <configuration>
-                    <plugins>
-                        <plugin>
-                            <groupId>com.h3xstream.findsecbugs</groupId>
-                            <artifactId>findsecbugs-plugin</artifactId>
-                            <version>${findsecbugs.plugin.version}</version>
-                        </plugin>
-                    </plugins>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>${maven.antrun.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>verify-generated-jar-manifest</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <property name="manifest.check.dir" value="${project.build.directory}/manifest-check" />
-                                <delete dir="${manifest.check.dir}" />
-                                <mkdir dir="${manifest.check.dir}" />
-                                <unzip src="${project.build.directory}/${project.build.finalName}.jar" dest="${manifest.check.dir}">
-                                    <patternset>
-                                        <include name="META-INF/MANIFEST.MF" />
-                                    </patternset>
-                                </unzip>
-                                <loadfile property="generated.jar.manifest" srcFile="${manifest.check.dir}/META-INF/MANIFEST.MF" />
-                                <condition property="manifest.has.app.name">
-                                    <contains string="${generated.jar.manifest}" substring="App-Name: ${project.artifactId}" />
-                                </condition>
-                                <condition property="manifest.has.app.version">
-                                    <contains string="${generated.jar.manifest}" substring="App-Version: ${project.version}" />
-                                </condition>
-                                <fail unless="manifest.has.app.name" message="El JAR generado no contiene App-Name: ${project.artifactId}" />
-                                <fail unless="manifest.has.app.version" message="El JAR generado no contiene App-Version: ${project.version}" />
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>${versions.maven.plugin.version}</version>
-            </plugin>
-        </plugins>
-    </build>
-
+          </plugins>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>verify-generated-jar-manifest</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="manifest.check.dir" value="${project.build.directory}/manifest-check" />
+                <delete dir="${manifest.check.dir}" />
+                <mkdir dir="${manifest.check.dir}" />
+                <unzip src="${project.build.directory}/${project.build.finalName}.jar" dest="${manifest.check.dir}">
+                  <patternset>
+                    <include name="META-INF/MANIFEST.MF" />
+                  </patternset>
+                </unzip>
+                <loadfile property="generated.jar.manifest" srcFile="${manifest.check.dir}/META-INF/MANIFEST.MF" />
+                <condition property="manifest.has.app.name">
+                  <contains string="${generated.jar.manifest}" substring="App-Name: ${project.artifactId}" />
+                </condition>
+                <condition property="manifest.has.app.version">
+                  <contains string="${generated.jar.manifest}" substring="App-Version: ${project.version}" />
+                </condition>
+                <fail unless="manifest.has.app.name" message="El JAR generado no contiene App-Name: ${project.artifactId}" />
+                <fail unless="manifest.has.app.version" message="El JAR generado no contiene App-Version: ${project.version}" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

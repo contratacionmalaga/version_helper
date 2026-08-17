@@ -1,9 +1,7 @@
 package local.jarios.version.api;
 
-import local.jarios.version.common.util.Mensajes;
-import local.jarios.version.exception.VersionException;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,124 +11,125 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import local.jarios.version.common.util.Mensajes;
+import local.jarios.version.exception.VersionException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class VersionImplTest {
 
-    private static final String CLASS_ENTRY = "example/Demo.class";
+  private static final String CLASS_ENTRY = "example/Demo.class";
 
-    @TempDir
-    Path tempDir;
+  @TempDir Path tempDir;
 
-    @Test
-    void getVersionThrowsWhenClassIsNull() {
-        VersionImpl version = new VersionImpl();
+  @Test
+  void getVersionThrowsWhenClassIsNull() {
+    VersionImpl version = new VersionImpl();
 
-        assertThatThrownBy(() -> version.getVersion(null))
-            .isInstanceOf(VersionException.class)
-            .hasMessage("La clase no puede ser nula");
+    assertThatThrownBy(() -> version.getVersion(null))
+        .isInstanceOf(VersionException.class)
+        .hasMessage("La clase no puede ser nula");
+  }
+
+  @Test
+  void getVersionReturnsDevelopmentMessageOutsideJar() {
+    VersionImpl version = new VersionImpl();
+
+    assertThat(version.getVersion(VersionImplTest.class)).isEqualTo(Mensajes.ERROR_2);
+  }
+
+  @Test
+  void getVersionResultReturnsTypedDevelopmentModeOutsideJar() {
+    VersionImpl version = new VersionImpl();
+
+    VersionResult result = version.getVersionResult(VersionImplTest.class);
+
+    assertThat(result.status()).isEqualTo(VersionStatus.DEVELOPMENT_MODE);
+    assertThat(result.version()).isNull();
+    assertThat(result.message()).isEqualTo(Mensajes.ERROR_2);
+    assertThat(result.isFound()).isFalse();
+  }
+
+  @Test
+  void getVersionReadsAppVersionFromManifest() throws IOException {
+    Path jarPath = createJarWithManifest("5.3.0");
+    VersionImpl version = versionReturning(jarResourceUrl(jarPath));
+
+    assertThat(version.getVersion(VersionImplTest.class)).isEqualTo("5.3.0");
+  }
+
+  @Test
+  void getVersionResultReturnsTypedVersionWhenManifestContainsAppVersion() throws IOException {
+    Path jarPath = createJarWithManifest("5.3.0");
+    VersionImpl version = versionReturning(jarResourceUrl(jarPath));
+
+    VersionResult result = version.getVersionResult(VersionImplTest.class);
+
+    assertThat(result.status()).isEqualTo(VersionStatus.VERSION_FOUND);
+    assertThat(result.version()).isEqualTo("5.3.0");
+    assertThat(result.message()).isNull();
+    assertThat(result.isFound()).isTrue();
+  }
+
+  @Test
+  void getVersionReturnsMessageWhenManifestIsMissing() throws IOException {
+    Path jarPath = createJarWithoutManifest();
+    VersionImpl version = versionReturning(jarResourceUrl(jarPath));
+
+    assertThat(version.getVersion(VersionImplTest.class)).isEqualTo(Mensajes.ERROR_3);
+  }
+
+  @Test
+  void getVersionReturnsMessageWhenAppVersionIsMissing() throws IOException {
+    Path jarPath = createJarWithManifest(null);
+    VersionImpl version = versionReturning(jarResourceUrl(jarPath));
+
+    assertThat(version.getVersion(VersionImplTest.class)).isEqualTo(Mensajes.ERROR_4);
+  }
+
+  private VersionImpl versionReturning(URL resourceUrl) {
+    return new VersionImpl() {
+      @Override
+      protected URL getResourceURL(Class<?> clazz, String className) {
+        return resourceUrl;
+      }
+    };
+  }
+
+  private URL jarResourceUrl(Path jarPath) throws IOException {
+    return URI.create("jar:" + jarPath.toUri() + "!/" + CLASS_ENTRY).toURL();
+  }
+
+  private Path createJarWithManifest(String appVersion) throws IOException {
+    Path jarPath = tempDir.resolve("version-helper-test.jar");
+    Manifest manifest = new Manifest();
+    Attributes attributes = manifest.getMainAttributes();
+    attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
+    if (appVersion != null) {
+      attributes.putValue("App-Version", appVersion);
     }
 
-    @Test
-    void getVersionReturnsDevelopmentMessageOutsideJar() {
-        VersionImpl version = new VersionImpl();
-
-        assertThat(version.getVersion(VersionImplTest.class)).isEqualTo(Mensajes.ERROR_2);
+    try (JarOutputStream jar =
+        new JarOutputStream(java.nio.file.Files.newOutputStream(jarPath), manifest)) {
+      addDummyClass(jar);
     }
 
-    @Test
-    void getVersionResultReturnsTypedDevelopmentModeOutsideJar() {
-        VersionImpl version = new VersionImpl();
+    return jarPath;
+  }
 
-        VersionResult result = version.getVersionResult(VersionImplTest.class);
+  private Path createJarWithoutManifest() throws IOException {
+    Path jarPath = tempDir.resolve("version-helper-test-no-manifest.jar");
 
-        assertThat(result.status()).isEqualTo(VersionStatus.DEVELOPMENT_MODE);
-        assertThat(result.version()).isNull();
-        assertThat(result.message()).isEqualTo(Mensajes.ERROR_2);
-        assertThat(result.isFound()).isFalse();
+    try (JarOutputStream jar = new JarOutputStream(java.nio.file.Files.newOutputStream(jarPath))) {
+      addDummyClass(jar);
     }
 
-    @Test
-    void getVersionReadsAppVersionFromManifest() throws IOException {
-        Path jarPath = createJarWithManifest("5.3.0");
-        VersionImpl version = versionReturning(jarResourceUrl(jarPath));
+    return jarPath;
+  }
 
-        assertThat(version.getVersion(VersionImplTest.class)).isEqualTo("5.3.0");
-    }
-
-    @Test
-    void getVersionResultReturnsTypedVersionWhenManifestContainsAppVersion() throws IOException {
-        Path jarPath = createJarWithManifest("5.3.0");
-        VersionImpl version = versionReturning(jarResourceUrl(jarPath));
-
-        VersionResult result = version.getVersionResult(VersionImplTest.class);
-
-        assertThat(result.status()).isEqualTo(VersionStatus.VERSION_FOUND);
-        assertThat(result.version()).isEqualTo("5.3.0");
-        assertThat(result.message()).isNull();
-        assertThat(result.isFound()).isTrue();
-    }
-
-    @Test
-    void getVersionReturnsMessageWhenManifestIsMissing() throws IOException {
-        Path jarPath = createJarWithoutManifest();
-        VersionImpl version = versionReturning(jarResourceUrl(jarPath));
-
-        assertThat(version.getVersion(VersionImplTest.class)).isEqualTo(Mensajes.ERROR_3);
-    }
-
-    @Test
-    void getVersionReturnsMessageWhenAppVersionIsMissing() throws IOException {
-        Path jarPath = createJarWithManifest(null);
-        VersionImpl version = versionReturning(jarResourceUrl(jarPath));
-
-        assertThat(version.getVersion(VersionImplTest.class)).isEqualTo(Mensajes.ERROR_4);
-    }
-
-    private VersionImpl versionReturning(URL resourceUrl) {
-        return new VersionImpl() {
-            @Override
-            protected URL getResourceURL(Class<?> clazz, String className) {
-                return resourceUrl;
-            }
-        };
-    }
-
-    private URL jarResourceUrl(Path jarPath) throws IOException {
-        return URI.create("jar:" + jarPath.toUri() + "!/" + CLASS_ENTRY).toURL();
-    }
-
-    private Path createJarWithManifest(String appVersion) throws IOException {
-        Path jarPath = tempDir.resolve("version-helper-test.jar");
-        Manifest manifest = new Manifest();
-        Attributes attributes = manifest.getMainAttributes();
-        attributes.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-        if (appVersion != null) {
-            attributes.putValue("App-Version", appVersion);
-        }
-
-        try (JarOutputStream jar = new JarOutputStream(java.nio.file.Files.newOutputStream(jarPath), manifest)) {
-            addDummyClass(jar);
-        }
-
-        return jarPath;
-    }
-
-    private Path createJarWithoutManifest() throws IOException {
-        Path jarPath = tempDir.resolve("version-helper-test-no-manifest.jar");
-
-        try (JarOutputStream jar = new JarOutputStream(java.nio.file.Files.newOutputStream(jarPath))) {
-            addDummyClass(jar);
-        }
-
-        return jarPath;
-    }
-
-    private void addDummyClass(JarOutputStream jar) throws IOException {
-        jar.putNextEntry(new JarEntry(CLASS_ENTRY));
-        jar.write(new byte[] {0});
-        jar.closeEntry();
-    }
+  private void addDummyClass(JarOutputStream jar) throws IOException {
+    jar.putNextEntry(new JarEntry(CLASS_ENTRY));
+    jar.write(new byte[] {0});
+    jar.closeEntry();
+  }
 }
