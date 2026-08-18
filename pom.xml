@@ -4,11 +4,11 @@
   <parent>
     <groupId>local.jarios</groupId>
     <artifactId>jarios-parent</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.12</version>
     <relativePath>../jarios-parent/pom.xml</relativePath>
   </parent>
   <artifactId>version-helper</artifactId>
-  <version>6.1.2</version>
+  <version>6.1.3</version>
   <packaging>jar</packaging>
   <name>version-helper</name>
   <description>Devuelve la versión de un fichero jar mediante la consulta del MANIFEST.MF</description>
